@@ -1,0 +1,111 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+
+class Book {
+public:
+    std::string title;
+    std::string author;
+    std::string isbn;
+    std::string genre;
+};
+
+class Library {
+private:
+    std::vector<Book> books;
+
+public:
+    void addBook(const Book& book) {
+        books.push_back(book);
+    }
+
+    void displayBooks() {
+        for (const Book& book : books) {
+            std::cout << "Title: " << book.title << std::endl;
+            std::cout << "Author: " << book.author << std::endl;
+            std::cout << "ISBN: " << book.isbn << std::endl;
+            std::cout << "Genre: " << book.genre << std::endl;
+            std::cout << "-------------------------" << std::endl;
+        }
+    }
+
+    bool removeBook(const std::string& isbn) {
+        for (auto it = books.begin(); it != books.end(); ++it) {
+            if (it->isbn == isbn) {
+                books.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+int main() {
+    Library library;
+    std::string username, password;
+
+    // Create a simple login system
+    std::cout << "Login System\n";
+    std::cout << "Enter your username: ";
+    std::cin >> username;
+    std::cout << "Enter your password: ";
+    std::cin >> password;
+
+    bool isAuthor = (username == "author" && password == "password");
+
+    while (true) {
+        int choice;
+        std::cout << "\nLibrary Management System\n";
+        std::cout << "1. Add a Book\n";
+        std::cout << "2. Search for a Book\n";
+        std::cout << "3. Display All Books\n";
+        if (isAuthor) {
+            std::cout << "4. Remove a Book\n";
+        }
+        std::cout << "0. Exit\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        if (choice == 0) {
+            break;
+        } else if (choice == 1 && isAuthor) {
+            Book book;
+            std::cout << "Title: ";
+            std::cin >> book.title;
+            std::cout << "Author: ";
+            std::cin >> book.author;
+            std::cout << "ISBN: ";
+            std::cin >> book.isbn;
+            std::cout << "Genre: ";
+            std::cin >> book.genre;
+            library.addBook(book);
+        } else if (choice == 2) {
+            std::string searchStr;
+            std::cout << "Enter title or author to search: ";
+            std::cin >> searchStr;
+            for (const Book& book : library.books) {
+                if (book.title == searchStr || book.author == searchStr) {
+                    std::cout << "Book Found:\n";
+                    std::cout << "Title: " << book.title << std::endl;
+                    std::cout << "Author: " << book.author << std::endl;
+                    std::cout << "ISBN: " << book.isbn << std::endl;
+                    std::cout << "Genre: " << book.genre << std::endl;
+                }
+            }
+        } else if (choice == 3) {
+            library.displayBooks();
+        } else if (choice == 4 && isAuthor) {
+            std::string isbn;
+            std::cout << "Enter ISBN of the book to remove: ";
+            std::cin >> isbn;
+            if (library.removeBook(isbn)) {
+                std::cout << "Book with ISBN " << isbn << " removed.\n";
+            } else {
+                std::cout << "Book with ISBN " << isbn << " not found.\n";
+            }
+        }
+    }
+
+    return 0;
+}
